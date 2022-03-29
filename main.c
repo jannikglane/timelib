@@ -8,55 +8,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int IstSchaltjahr(int jahr);
-int TagErmitteln(int tag, int monat, int *tage_pro_monat);
+const int tage_pro_monat[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
 
-int main()
+int is_leapyear(int jahr)
 {
-    // Initialisierung der benötigten Variablen
-    int tag = 0;
-    int monat = 0;
-    int jahr = 0;
-    int tageGesamt = 0;
-    int tage_pro_monat[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    if(jahr < 1582)
+        return -1;
 
-    printf("*** Tag des Jahres ***\n");
-
-    // Aufforderung zur Eingabe des Jahres
-    printf("Bitte das Jahr angeben: ");
-    scanf("%i", &jahr);
-
-    do
-    {
-        // Eingabe des Monats
-        printf("Bitte den Monat angeben: ");
-        scanf("%i", &monat);
-    }
-    while(monat < 1 || monat > sizeof(tage_pro_monat)/sizeof(tage_pro_monat[0]));
-
-    // Aufruf einer Funktion die bestimmt ob das übergebene Jahr ein Schaltjahr ist
-    if(IstSchaltjahr(jahr))
-        tage_pro_monat[1] = 29;
-
-    do
-    {
-        // Eingabe des Tages
-        printf("Bitte den Tag angeben: ");
-        scanf("%i", &tag);
-    }
-    while(tag < 1 || tag > tage_pro_monat[monat-1]);
-
-    // Aufruf einer Funktion die die Tage der Monate zusammenrechnet
-    tageGesamt = TagErmitteln(tag, monat, tage_pro_monat);
-
-    // Ausgabe der Summer der Tage
-    printf("Heute ist der %i. Tag im Jahr", tageGesamt);
-
-    return 0;
-}
-
-int IstSchaltjahr(int jahr)
-{
     if(jahr % 4 == 0)
     {
         if(jahr % 100 == 0)
@@ -81,13 +39,78 @@ int IstSchaltjahr(int jahr)
     }
 }
 
-int TagErmitteln(int tag, int monat, int *tage_pro_monat)
+int exists_date(int day, int month, int year)
 {
-    int summe;
-    for(int i = 0; i < monat-1; i++)
+    if(year < 1582 && year > 2400)
+        return 0;
+
+    if(month < 1 || month > sizeof(tage_pro_monat)/sizeof(tage_pro_monat[0]))
+        return 0;
+
+    if(day < 1 || day > tage_pro_monat[month-1])
+        return 0;
+
+    return 1;
+}
+
+int get_days_for_month(int month, int year)
+{
+    int days = 0;
+
+    if(month < 1 || month > 12)
+        return -1;
+
+    days += tage_pro_monat[month-1];
+
+    if(is_leapyear(year))
+        days += 1;
+
+    return days;
+}
+
+int day_of_the_year(int day, int month, int year)
+{
+    if(!exists_date(day, month, year))
+        return -1;
+
+    // Initialisierung der benötigten Variablen
+    int sumOfMonths = 0;
+
+    for(int i = 1; i <= month; i++)
     {
-        summe += tage_pro_monat[i];
+        sumOfMonths += get_days_for_month(i, year);
     }
-    summe += tag;
-    return summe;
+
+    // Ausgabe der Summer der Tage
+    return sumOfMonths - (tage_pro_monat[month-1]-day);
+}
+
+int input_date(int *day, int *month, int *year)
+{
+    do
+    {
+        // Aufforderung zur Eingabe des Jahres
+        printf("Bitte das Jahr angeben: ");
+        scanf("%d", year);
+
+        // Eingabe des Monatss
+        printf("Bitte den Monat angeben: ");
+        scanf("%d", month);
+
+        // Eingabe des Tages
+        printf("Bitte den Tag angeben: ");
+        scanf("%d", day);
+    }
+    while(exists_date(day, month, year) == 1);
+}
+
+int main()
+{
+    int day, month, year;
+    day = month = year = 0;
+
+    input_date(&day, &month, &year);
+
+    printf("Tag des Jahres: %d", day_of_the_year(day, month, year));
+    return 0;
 }
