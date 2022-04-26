@@ -10,16 +10,16 @@
 
 const int tage_pro_monat[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
 
-int is_leapyear(int jahr)
+int is_leapyear(int year)
 {
-    if(jahr < 1582)
+    if(year< 1582)
         return -1;
 
-    if(jahr % 4 == 0)
+    if(year % 4 == 0)
     {
-        if(jahr % 100 == 0)
+        if(year % 100 == 0)
         {
-            if (jahr % 400 == 0)
+            if (year % 400 == 0)
             {
                 return 1;
             }
@@ -62,7 +62,7 @@ int get_days_for_month(int month, int year)
 
     days += tage_pro_monat[month-1];
 
-    if(is_leapyear(year))
+    if(is_leapyear(year) && month == 1)
         days += 1;
 
     return days;
@@ -101,7 +101,19 @@ int input_date(int *day, int *month, int *year)
         printf("Bitte den Tag angeben: ");
         scanf("%d", day);
     }
-    while(exists_date(day, month, year) == 1);
+    while(exists_date(*day, *month, *year) == 0);
+
+    return 0;
+}
+
+// https://stackoverflow.com/a/21235587
+int get_weekday(int *day, int *month, int *year)
+{
+    int d = *day;
+    int m = *month;
+    int y = *year;
+
+    return (d += m < 3 ? y-- : y - 2, 23*m/9 + d + 4 + y/4- y/100 + y/400)%7;
 }
 
 int main()
@@ -111,6 +123,10 @@ int main()
 
     input_date(&day, &month, &year);
 
-    printf("Tag des Jahres: %d", day_of_the_year(day, month, year));
+    printf("Tag des Jahres: %d \n", day_of_the_year(day, month, year));
+
+    char weekdays[7][10] = {"Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
+    printf("Der Tag war ein: %s \n", weekdays[get_weekday(&day, &month, &year)]);
+
     return 0;
 }
