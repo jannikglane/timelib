@@ -44,9 +44,7 @@ int is_leapyear(int year)
 
 /** @brief Die Funktion überprüft, ob ein eingegebenes Datum gültig ist.
  *
- * @param int day Eingegebener Tag
- * @param int month Eingegebener Monat
- * @param int year Eingegebenes Jahr
+ * @param struct Date date
  * @return int 1 wenn das Datum gültig ist. -1 wenn das Datum ungültig ist.
  *
  */
@@ -92,9 +90,7 @@ int get_days_for_month(int month, int year)
  *  und Jahr die Nummer des Tages, gezählt von Jahresbeginn (1. Januar) an. Schaltjahre werden bei der
  *  Berechnung berücksichtigt.
  *
- * @param int day Eingegebenes Jahr
- * @param int month Eingegebener Monat
- * @param int year Eingegebenes Jahr
+ * @param struct Date date
  * @return int Nummer des Tages. Ist das übergebene Datum ungültig, beträgt der Rückgabewert -1.
  *
  */
@@ -115,13 +111,9 @@ int day_of_the_year(struct Date date)
     return sumOfMonths - (tage_pro_monat[date.month-1]-date.day);
 }
 
-/** @brief Die Funktion liest 3 Ganzzahlwerte (Integer) ein, für Tag, Monat und Jahr. Wenn das angegebene Datum
- *  ungültig ist, wird erneut eingelesen, solange bis ein gültiges Datum eingegeben wurde.
+/** @brief Die Funktion liest 3 Ganzzahlwerte (Integer) ein, für Tag, Monat und Jahr.
  *
- * @param int day Pointer, zeigt auf die day Variable
- * @param int month Pointer, zeigt auf die month Variable
- * @param int year Pointer, zeigt auf die year Variable
- * @return void
+ * @return struct Date
  *
  */
 struct Date input_date()
@@ -145,9 +137,7 @@ struct Date input_date()
 
 /** @brief Bestimmt des Tag der Woche. Index beginnt bei Sonntag. Code aus: https://stackoverflow.com/a/21235587
  *
- * @param int day Pointer, zeigt auf die day Variable
- * @param int month Pointer, zeigt auf die month Variable
- * @param int year Pointer, zeigt auf die year Variable
+ * @param struct Date date
  * @return int Tag der Woche 0-6
  *
  */
