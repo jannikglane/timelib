@@ -11,15 +11,17 @@
 
 int main()
 {
-    int day, month, year;
-    day = month = year = 0;
-
-    input_date(&day, &month, &year);
-
-    printf("Tag des Jahres: %d \n", day_of_the_year(day, month, year));
-
     char weekdays[7][10] = {"Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"};
-    printf("Der Tag war ein: %s \n", weekdays[get_weekday(&day, &month, &year)]);
+    struct Date date;
+
+    do
+    {
+        date = input_date();
+    }
+    while(exists_date(date) == 0);
+
+    printf("Tag des Jahres: %d \n", day_of_the_year(date));
+    printf("Der Tag ist ein: %s \n", weekdays[get_weekday(date)]);
 
     return 0;
 }
